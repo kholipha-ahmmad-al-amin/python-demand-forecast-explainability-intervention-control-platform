@@ -5,4 +5,4 @@
 - [x] Serve a LAN bound FastAPI service and browser planning interface on port 10900.
 - [x] Add tests for forecast success, validation, authorization, conflict, failure, and explanation paths.
 - [x] Add Docker, GitHub Actions CI, SQL migration, and required README documentation.
-- [ ] Verify public repository creation, visibility, default branch, and portfolio ledger entry.
+- [x] Verify public repository creation, visibility, default branch, and portfolio ledger entry.
