@@ -1,0 +1,8 @@
+services:
+  forecast-control:
+    build: .
+    environment:
+      PORT: 10900
+    ports:
+      - "10900:10900"
+
