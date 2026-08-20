@@ -52,6 +52,18 @@ def test_intervention_requires_planner_then_approver():
     assert repeated.value.kind == "conflict"
 
 
+def test_approver_can_reject_proposed_intervention():
+    engine = ready_engine()
+    engine.create_forecast("analyst", Role.ANALYST, "FC-1001", "SKU-1", "2026-01-14", 20.0, False)
+    engine.propose_intervention("planner", Role.PLANNER, "INT-1001", "FC-1001", "increase_replenishment")
+    rejected = engine.reject_intervention("approver", Role.APPROVER, "INT-1001")
+    assert rejected.status is InterventionStatus.REJECTED
+    assert engine.snapshot()["audit_events"][0]["action"] == "intervention_rejected"
+    with pytest.raises(DomainFailure) as repeated:
+        engine.reject_intervention("approver", Role.APPROVER, "INT-1001")
+    assert repeated.value.kind == "conflict"
+
+
 def test_planner_cannot_approve_and_unknown_forecast_is_rejected():
     engine = ready_engine()
     with pytest.raises(DomainFailure) as missing:
