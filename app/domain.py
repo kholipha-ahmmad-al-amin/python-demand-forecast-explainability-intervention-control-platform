@@ -167,6 +167,18 @@ class ForecastEngine:
         self._audit(actor, item.forecast_run_id, "intervention_approved", f"Approved {item.action_type} intervention")
         return item
 
+    def reject_intervention(self, actor: str, role: Role, intervention_id: str) -> Intervention:
+        self._allow(role, Role.APPROVER, Role.ADMIN)
+        item = self.interventions.get(intervention_id)
+        if item is None:
+            self._fail("not_found", "intervention was not found")
+        if item.status is not InterventionStatus.PROPOSED:
+            self._fail("conflict", "only a proposed intervention can be rejected")
+        item.status = InterventionStatus.REJECTED
+        item.updated_at = self._now()
+        self._audit(actor, item.forecast_run_id, "intervention_rejected", f"Rejected {item.action_type} intervention")
+        return item
+
     def seed_demo(self, actor: str, role: Role) -> dict[str, Any]:
         self._allow(role, Role.ANALYST, Role.ADMIN)
         if self.observations:
